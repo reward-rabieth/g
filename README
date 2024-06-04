@@ -1,0 +1,99 @@
+My Go cookbook
+https://sive.rs/contact
+
+
+==============
+======= USAGE:
+==============
+
+FIRST, INSTALL:
+PostgreSQL, Ruby, Go, and cURL.
+see top of DBAPI/data.sql
+
+INSTALL RUBY GEMS:
+gem install sinatra rackup pg
+https://sinatrarb.com/
+
+HOW TO RUN IN RUBY:
+cd $dirname
+./*.rb runs a web server on port 4567
+... so in a separate window: ./curl.sh calls example URLs
+
+First I’ll do it in Ruby Sinatra, then we’ll do it in Go.
+
+==============
+===== RECIPES:
+==============
+
+DBAPI/
+    init with schema name, returning function/object with schema curried
+    varargs params-counter: no args: (), one arg: ($1), two args: ($1,$2), etc
+    varargs make SQL query, exec_params it, get first result, decode JSON
+    verify nested JSON decoding (hash with array of hashes)
+    verify empty array (person(2).things == [])
+    verify function overloading OK
+cookies/
+    set cookie
+    get cookie
+files/
+    send static file (like PDF, MP3, MP4)
+    override default text/html mime type
+    add header for attachment-download
+headers/
+    get HTTP request/server info like their IP address or user-agent
+    set custom header
+    set HTTP status code
+params-forms/
+    get URL params: /people/513/place/CH?sort=new
+    get form-posted values
+redirect/
+    redirect to another relative URL
+template/
+    give variable to template, getting parsed/merged back, return response
+url-routes/
+    match method + combo routes: GET /people/:id, POST /people, POST /people/:id
+    match route with regexp: /people/([1-9][0-9]*)/country/([A-Z]{2})$
+
+==============
+========= WHY?
+==============
+
+Why re-create Sinatra functionality in Go?
+
+I (Derek) have been using Ruby and Sinatra happily for 15 years, but wanting:
+* easier-to-understand functionality - only what I need
+* as few 3rd-party libraries as possible
+* all libs in my own codebase, so library updates don't break it
+* simpler deployment, ideally each web app in a compiled binary
+* the cleansing effect of re-writing old code
+
+
+==============
+== VISIBILITY:
+==============
+
+How much of the lower-level information should be on display?
+
+Ruby hides it all.  Go keeps most of it visible.
+
+On principle, I like the idea of it being visible.
+I like programming.  I like knowing what's going on.
+
+But I work on low-level stuff at a different time than the high-level stuff.
+
+When I'm just working on my web app, I'm thinking in terms of a person using
+the website.  "When they GET /home, it gets the 'homeinfo' function from the
+database, into variable 'h' and passes that into HTML template 'home.tpl'."
+
+Or another example, "When a user hits any URL, check if they have the 'ok'
+cookie.  If not, redirect them to /login, but if so, search for its person
+the database.  If found, get their 'userid', and redirect to /account.  If
+not found in the database, erase the 'ok' cookie and redirect to /login."
+
+See?  At times like that, I don't want mental or visual clutter of the low-
+level stuff.
+
+But if I want to fix, change, or understand something low-level, I'd like it
+to be pretty explicit, and not spread around 100 separate libraries that have
+way more functionality than I'll ever use.
+

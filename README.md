@@ -1,2 +1,0 @@
-# g
-Go cookbook
